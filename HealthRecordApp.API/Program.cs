@@ -1,6 +1,12 @@
+using HealthRecordApp.Authentication.Configuration;
 using HealthRecordApp.DataService.Configuration;
 using HealthRecordApp.DataService.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,9 +22,51 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
+//Move Default authentication to JWT
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(jwt =>
+{
+    var key = Encoding.UTF8.GetBytes(builder.Configuration["JWTConfig:Secret"]);
+    jwt.SaveToken = true;
+    jwt.TokenValidationParameters = new TokenValidationParameters
+    {
+
+        RequireExpirationTime=true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["JWTConfig:Issuer"], 
+        ValidAudience = builder.Configuration["JWTConfig:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateLifetime = true,
+    };
+});
+
+
+
+
+builder.Services.AddDefaultIdentity<IdentityUser>(opt => { opt.SignIn.RequireConfirmedAccount = true;})
+    .AddEntityFrameworkStores<AppDBContext>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.Configure<JWTConfig>(builder.Configuration.GetSection("JWTConfig"));
 
+builder.Services.AddApiVersioning(opt =>
+{
+    //provide to clinet different api version that we have
+    opt.ReportApiVersions = true;
+
+    //this allow  the  api automatically provide deafult version
+      opt.AssumeDefaultVersionWhenUnspecified=true;
+
+      opt.DefaultApiVersion=ApiVersion.Default;
+  }
+    
+    );
 
 var app = builder.Build();
 
@@ -30,7 +78,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();    
 app.UseAuthorization();
 
 app.MapControllers();

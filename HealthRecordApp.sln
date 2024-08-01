@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthRecordApp.API", "HealthRecordApp.API\HealthRecordApp.API.csproj", "{D6A3155A-AA13-4ADB-A4A5-56919B290FA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthRecordApp.API", "HealthRecordApp.API\HealthRecordApp.API.csproj", "{D6A3155A-AA13-4ADB-A4A5-56919B290FA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthRecordApp.Services", "HealthRecordApp.Services\HealthRecordApp.Services.csproj", "{A3C635CF-6D5E-4706-82C7-94571E4EB449}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthRecordApp.Services", "HealthRecordApp.Services\HealthRecordApp.Services.csproj", "{A3C635CF-6D5E-4706-82C7-94571E4EB449}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthRecordApp.DataService", "HealthRecordApp.DataService\HealthRecordApp.DataService.csproj", "{5EE7788C-F393-43AC-A45B-35559549AD90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthRecordApp.DataService", "HealthRecordApp.DataService\HealthRecordApp.DataService.csproj", "{5EE7788C-F393-43AC-A45B-35559549AD90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthRecordApp.Entities", "HealthRecordApp.Entities\HealthRecordApp.Entities.csproj", "{C618334D-429D-42B9-A58F-19EC9B9794CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthRecordApp.Entities", "HealthRecordApp.Entities\HealthRecordApp.Entities.csproj", "{C618334D-429D-42B9-A58F-19EC9B9794CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HealthRecordApp.Authentication", "HealthRecordApp.Authentication\HealthRecordApp.Authentication.csproj", "{606DC509-88D0-4CA9-BA55-04D9CE371617}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{C618334D-429D-42B9-A58F-19EC9B9794CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C618334D-429D-42B9-A58F-19EC9B9794CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C618334D-429D-42B9-A58F-19EC9B9794CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{606DC509-88D0-4CA9-BA55-04D9CE371617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{606DC509-88D0-4CA9-BA55-04D9CE371617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{606DC509-88D0-4CA9-BA55-04D9CE371617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{606DC509-88D0-4CA9-BA55-04D9CE371617}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
