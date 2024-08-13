@@ -20,6 +20,8 @@ namespace HealthRecordApp.DataService.Data
 
         public IUsersRepository Users { get; set; }
 
+        public IRefreshTokenRepository RefreshTokens {  get; set; }
+
         public UnitOfWork(AppDBContext context, ILoggerFactory logger)
         {
             _context = context;
@@ -27,6 +29,9 @@ namespace HealthRecordApp.DataService.Data
             _logger = logger.CreateLogger("db_logs");
 
             Users=new UsersRepository(context, _logger);
+
+            RefreshTokens=new RefreshTokenRepository(context, _logger);
+
         }
 
         public async Task completeAsync()

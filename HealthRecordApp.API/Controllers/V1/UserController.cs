@@ -1,6 +1,8 @@
 ﻿using HealthRecordApp.DataService.Configuration;
 using HealthRecordApp.Entities.DBSets;
 using HealthRecordApp.Entities.Dtos.Incoming;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HealthRecordApp.API.Controllers.V1

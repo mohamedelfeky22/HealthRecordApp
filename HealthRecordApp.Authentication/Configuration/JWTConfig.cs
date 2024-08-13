@@ -9,5 +9,6 @@ namespace HealthRecordApp.Authentication.Configuration
     public class JWTConfig
     {
         public string Secret { get; set; }
+        public TimeSpan ExpiryTime { get; set; }
     }
 }

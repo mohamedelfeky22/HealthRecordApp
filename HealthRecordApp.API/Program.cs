@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -23,6 +24,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+//configure referesh token 
+var key = Encoding.UTF8.GetBytes(builder.Configuration["JWTConfig:Secret"]);
+var tokenValidationParameters = new TokenValidationParameters
+{
+
+    RequireExpirationTime = true,
+    ValidateIssuerSigningKey = true,
+    ValidIssuer = builder.Configuration["JWTConfig:Issuer"],
+    ValidAudience = builder.Configuration["JWTConfig:Audience"],
+    IssuerSigningKey = new SymmetricSecurityKey(key),
+    ValidateLifetime = true,
+};
+
+//Injecting into our DI Container
+builder.Services.AddSingleton(tokenValidationParameters);
+
 //Move Default authentication to JWT
 builder.Services.AddAuthentication(opt =>
 {
@@ -34,16 +51,7 @@ builder.Services.AddAuthentication(opt =>
 {
     var key = Encoding.UTF8.GetBytes(builder.Configuration["JWTConfig:Secret"]);
     jwt.SaveToken = true;
-    jwt.TokenValidationParameters = new TokenValidationParameters
-    {
-
-        RequireExpirationTime=true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JWTConfig:Issuer"], 
-        ValidAudience = builder.Configuration["JWTConfig:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-        ValidateLifetime = true,
-    };
+    jwt.TokenValidationParameters = tokenValidationParameters;
 });
 
 
@@ -67,6 +75,9 @@ builder.Services.AddApiVersioning(opt =>
   }
     
     );
+
+
+ //var 
 
 var app = builder.Build();
 

@@ -8,6 +8,9 @@ namespace HealthRecordApp.DataService.Data
     {
 
         public virtual DbSet<User>  Users { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+
+
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
             

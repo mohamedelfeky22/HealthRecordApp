@@ -9,6 +9,7 @@ using HealthRecordApp.Authentication.DTO.Outgoing;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using HealthRecordApp.Entities.DBSets;
 
 namespace HealthRecordApp.API.Controllers.V1
 {
@@ -66,6 +67,19 @@ namespace HealthRecordApp.API.Controllers.V1
                 //create JWT Token
                 var token= GenerateToken(newUser);
 
+                // add user To User Table 
+                var _user = new User()
+                {
+                    firstName = userRegisterationDto.firstName,
+                    lastName = userRegisterationDto.lastName,
+                    email = userRegisterationDto.email,
+                    country = "",  //todo
+                    phone = "",  //todo 
+                    identityUserId=new Guid(newUser.Id),
+                };
+                await _unitOfWork.Users.add(_user);
+                await _unitOfWork.completeAsync();
+
                 return Ok(new UserRegisterationResponseDto()
                 {
                     Token=token,
@@ -73,6 +87,7 @@ namespace HealthRecordApp.API.Controllers.V1
 
                 });
             }
+
             else
             {
                 return BadRequest(new UserRegisterationResponseDto()
@@ -84,6 +99,59 @@ namespace HealthRecordApp.API.Controllers.V1
             }
         }
 
+
+
+        [HttpPost]
+        [Route("Login")]
+
+        public async Task<IActionResult> Login([FromBody] UserLoginRequestDto userLoginRequestDto)
+        {
+            if (ModelState.IsValid)
+            {
+                //check if email exist
+                var userExist = await _userManager.FindByEmailAsync(userLoginRequestDto.email);
+                if (userExist == null)
+                {
+                    return Unauthorized(new UserLoginResponseDto()
+                    {
+                        Token = "",
+                        Success = false,
+                        Errors = new List<string>() { "Invalid authentication Request" }
+                    });
+                }
+                //chekc if the user has valid password
+                var isCorrect = await _userManager.CheckPasswordAsync(userExist, userLoginRequestDto.password);
+                if (isCorrect)
+                {
+                    var token = GenerateToken(userExist);
+
+                    return Ok(new UserLoginResponseDto()
+                    {
+                        Token=token,
+                        Success = true
+                    });
+                }
+                else
+                {
+                    return Unauthorized(new UserLoginResponseDto()
+                    {
+                        Token = "",
+                        Success = false,
+                        Errors = new List<string>() { "Invalid authentication Request" }
+                    }
+                    );
+                }
+            } 
+            else
+            {
+                return BadRequest(new UserLoginResponseDto()
+                {
+                    Token = "",
+                    Success = false,
+                    Errors = new List<string>() { "Invalid Payload" }
+                }); 
+            }
+        }
         private string GenerateToken(IdentityUser user)
         {
             var jwtHandler = new JwtSecurityTokenHandler();
@@ -98,12 +166,13 @@ namespace HealthRecordApp.API.Controllers.V1
                     new Claim(JwtRegisteredClaimNames.Email,user.Email),
                     new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())//unique identifier for the generated token not the user ,used for referesh token   
             }),
-                Expires = DateTime.UtcNow.AddHours(1), // Token expiration time     
+                Expires = DateTime.UtcNow.Add(_JWTConfig.ExpiryTime), // Token expiration time     
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature) //the algorithm for token encryption 
             };
             //create security object token
             var token = jwtHandler.CreateToken(tokenDescriptor);
             //convert security object token into string 
+
             return jwtHandler.WriteToken(token);
         }
     }

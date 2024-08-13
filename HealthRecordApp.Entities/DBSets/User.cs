@@ -9,6 +9,7 @@ namespace HealthRecordApp.Entities.DBSets
 
     public class User : BaseEntity
     {
+        public Guid identityUserId { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string email { get; set; }

@@ -11,6 +11,9 @@ namespace HealthRecordApp.DataService.Configuration
     {
         IUsersRepository Users { get; }
 
+
+        IRefreshTokenRepository RefreshTokens { get; }
+
         Task completeAsync();
 
     }
